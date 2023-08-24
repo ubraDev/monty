@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include "monty.h"
 /**
  * f_push - add node to the stack
@@ -5,33 +9,43 @@
  * @counter: line_number
  * Return: no return
 */
-void f_push(stack_t **head, unsigned int counter)
-{
-	int n, j = 0, flag = 0;
+#define STACK_SIZE 100
 
-	if (bus.arg)
-	{
-		if (bus.arg[0] == '-')
-			j++;
-		for (; bus.arg[j] != '\0'; j++)
-		{
-			if (bus.arg[j] > 57 || bus.arg[j] < 48)
-				flag = 1; }
-		if (flag == 1)
-		{ fprintf(stderr, "L%d: usage: push integer\n", counter);
-			fclose(bus.file);
-			free(bus.content);
-			free_stack(*head);
-			exit(EXIT_FAILURE); }}
-	else
-	{ fprintf(stderr, "L%d: usage: push integer\n", counter);
-		fclose(bus.file);
-		free(bus.content);
-		free_stack(*head);
-		exit(EXIT_FAILURE); }
-	n = atoi(bus.arg);
-	if (bus.lifi == 0)
-		addnode(head, n);
-	else
-		addqueue(head, n);
+typedef struct
+{
+int data[STACK_SIZE];
+int top;
+} Stack;
+
+void initialize(Stack *stack)
+{
+stack->top = -1;
+}
+
+void push(Stack *stack, int value)
+{
+if (stack->top == STACK_SIZE - 1)
+{
+fprintf(stderr, "Stack overflow\n");
+exit(EXIT_FAILURE);
+}
+stack->top++;
+stack->data[stack->top] = value;
+}
+
+int main(int argc, char *argv[])
+{
+if (argc != 2)
+{
+fprintf(stderr, "Usage: %s <integer>\n", argv[0]);
+return EXIT_FAILURE;
+}
+
+Stack stack;
+initialize(&stack);
+
+int value = atoi(argv[1]);
+push(&stack, value);
+
+return 0;
 }
